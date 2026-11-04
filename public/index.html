@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Group App</title>
+  <script src="https://cdn.jsdelivr.net/npm/parse@5.3.0/dist/parse.min.js"></script>
+</head>
+<body>
+  <h1>Group App</h1>
+  <input id="user" placeholder="Username">
+  <input id="pass" type="password" placeholder="Password">
+  <button onclick="signUp()">Sign up</button>
+  <button onclick="logIn()">Log in</button>
+  <button onclick="logOut()">Log out</button>
+  <p id="status"></p>
+
+  <script>
+    Parse.initialize(B5HnjwByfcseN4kxNM6NA3PM5GkXntYwQffvySB7, Pq1xqKOwlaEMC4YIZfSVrrAk9JATzVC3zYptls4D);
+    Parse.serverURL = "https://parseapi.back4app.com";
+
+    const status = document.getElementById("status");
+    const creds = () => [user.value, pass.value];
+
+    function refresh() {
+      const me = Parse.User.current();
+      // This is the "protected" part: only logged-in users see this
+      status.textContent = me ? "Logged in as " + me.get("username") : "Please log in to see the protected content.";
+    }
+    async function signUp() {
+      try { await Parse.User.signUp(...creds(), {}); refresh(); }
+      catch (e) { status.textContent = e.message; }
+    }
+    async function logIn() {
+      try { await Parse.User.logIn(...creds()); refresh(); }
+      catch (e) { status.textContent = e.message; }
+    }
+    async function logOut() { await Parse.User.logOut(); refresh(); }
+    refresh();
+  </script>
+</body>
+</html>
