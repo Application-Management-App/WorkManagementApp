@@ -1,16 +1,22 @@
-# Dependencies
-node_modules/
+# Logs
+logs
+*.log
+npm-debug.log*
 
-# Build output
+# Dependencies and build output
+node_modules/
 dist/
+dist-ssr/
+*.local
 
 # Environment variables (contains API keys)
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
 
 # Editor directories and files
-.vscode/
+.vscode/*
+!.vscode/extensions.json
 .idea/
 *.swp
 *.swo
@@ -20,5 +26,5 @@ dist/
 .DS_Store
 Thumbs.db
 
-# Logs
-npm-debug.log*
+# Netlify CLI
+.netlify
