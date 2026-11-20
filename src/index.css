@@ -230,9 +230,27 @@ body {
   overflow: hidden;
 }
 
+/* Floating add button on mobile */
+
+.btn-add {
+  position: fixed;
+  bottom: var(--space-5);
+  right: var(--space-5);
+  z-index: 100;
+  box-shadow: 3px 3px 0 var(--charcoal);
+}
+
 /* Responsive */
 
 @media (min-width: 1024px) {
+  .btn-add {
+    position: static;
+    box-shadow: none;
+  }
+
+  .btn-add:hover {
+    box-shadow: 3px 3px 0 var(--charcoal);
+  }
   .header-band {
     margin: 0 0 var(--space-5);
     border-radius: var(--radius-lg);
