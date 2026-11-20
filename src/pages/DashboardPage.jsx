@@ -1,13 +1,39 @@
-import { applications, tasks } from "../data/mockData.js";
+import { useState, useEffect } from "react";
+import { getApplications } from "../services/applicationService.js";
+import { getTasksByApplication } from "../services/taskService.js";
 import ApplicationCard from "../components/ApplicationCard.jsx";
 import ReminderCard from "../components/ReminderCard.jsx";
 import DetailPanel from "../components/DetailPanel.jsx";
 
 export default function DashboardPage() {
-  const openTasks = tasks.filter((task) => task.completedAt === null);
+  const [applications, setApplications] = useState([]);
+  const [openTasks, setOpenTasks] = useState([]);
+  const [selectedTasks, setSelectedTasks] = useState([]);
 
-  // For now, show the first application in the detail panel
-  const selectedApplication = applications[0];
+  useEffect(() => {
+    async function loadData() {
+      const apps = await getApplications();
+      setApplications(apps);
+
+      const allOpenTasks = [];
+      for (const app of apps) {
+        const tasks = await getTasksByApplication(app.id);
+        const open = tasks
+          .filter((t) => t.startingDate != null && t.completedAt == null)
+          .map((t) => ({ ...t, companyName: app.companyName }));
+        allOpenTasks.push(...open);
+      }
+      setOpenTasks(allOpenTasks);
+
+      if (apps.length > 0) {
+        const firstTasks = await getTasksByApplication(apps[0].id);
+        setSelectedTasks(firstTasks);
+      }
+    }
+    loadData();
+  }, []);
+
+  const selectedApplication = applications[0] || null;
 
   return (
     <div className="page-layout">
@@ -27,7 +53,7 @@ export default function DashboardPage() {
 
           <h3>Reminders</h3>
           {openTasks.map((task) => (
-            <ReminderCard key={`${task.applicationId}-${task.taskNumber}`} task={task} />
+            <ReminderCard key={`${task.id}`} task={task} />
           ))}
 
           <h3>Applications</h3>
@@ -36,7 +62,7 @@ export default function DashboardPage() {
           ))}
         </main>
 
-        <DetailPanel application={selectedApplication} />
+        <DetailPanel application={selectedApplication} tasks={selectedTasks} />
       </div>
     </div>
   );
