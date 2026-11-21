@@ -7,3 +7,4 @@ Parse.initialize(
 Parse.serverURL = import.meta.env.VITE_PARSE_SERVER_URL;
 
 export default Parse;
+
