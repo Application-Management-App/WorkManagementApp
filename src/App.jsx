@@ -1,6 +1,10 @@
 import DashboardPage from "./pages/DashboardPage.jsx";
 
+/**
+ * Root application component.
+ * Currently renders the dashboard directly.
+ * Authentication flow can be added here when ready.
+ */
 export default function App() {
-  // TODO: Re-enable login flow when auth is ready
   return <DashboardPage />;
 }
