@@ -7,18 +7,11 @@ import Parse from "./parse.js";
  * Usage: import { seedDatabase } from "./seedData.js";
  *        seedDatabase();
  *
- * startingDate logic for default tasks:
- *   - First task starts immediately (when the application is created).
- *   - Each next task starts when the previous one is completed.
- *   - If the previous task is not completed, startingDate stays null.
+ * Every application gets only the "Application sent" step,
+ * the same as applications created in the app.
  */
 
-const DEFAULT_TASKS = [
-  { title: "Read job posting and research company", taskType: "research" },
-  { title: "Tailor CV to position", taskType: "document" },
-  { title: "Write cover letter", taskType: "document" },
-  { title: "Application sent", taskType: "submit" },
-];
+const APPLICATION_SENT = { title: "Application sent", taskType: "submit" };
 
 const seedApplications = [
   // ───── IT JOBS ─────
@@ -33,10 +26,7 @@ const seedApplications = [
     deadline: new Date("2026-12-15"),
     followUpDate: new Date("2026-12-01"),
     tasks: [
-      { ...DEFAULT_TASKS[0], startingDate: new Date("2026-11-06"), completedAt: new Date("2026-11-08") },
-      { ...DEFAULT_TASKS[1], startingDate: new Date("2026-11-08"), completedAt: new Date("2026-11-10") },
-      { ...DEFAULT_TASKS[2], startingDate: new Date("2026-11-10"), completedAt: new Date("2026-11-12") },
-      { ...DEFAULT_TASKS[3], startingDate: new Date("2026-11-12"), completedAt: new Date("2026-11-13") },
+      { ...APPLICATION_SENT, startingDate: new Date("2026-11-12"), completedAt: new Date("2026-11-13") },
       {
         title: "Prepare for technical interview",
         taskType: "custom",
@@ -56,10 +46,7 @@ const seedApplications = [
     deadline: null,
     followUpDate: null,
     tasks: [
-      { ...DEFAULT_TASKS[0], startingDate: new Date("2026-11-18"), completedAt: null },
-      { ...DEFAULT_TASKS[1], startingDate: null, completedAt: null },
-      { ...DEFAULT_TASKS[2], startingDate: null, completedAt: null },
-      { ...DEFAULT_TASKS[3], startingDate: null, completedAt: null },
+      { ...APPLICATION_SENT, startingDate: null, completedAt: null },
     ],
   },
   {
@@ -74,10 +61,7 @@ const seedApplications = [
     deadline: new Date("2026-11-30"),
     followUpDate: new Date("2026-11-25"),
     tasks: [
-      { ...DEFAULT_TASKS[0], startingDate: new Date("2026-11-01"), completedAt: new Date("2026-11-03") },
-      { ...DEFAULT_TASKS[1], startingDate: new Date("2026-11-03"), completedAt: new Date("2026-11-05") },
-      { ...DEFAULT_TASKS[2], startingDate: new Date("2026-11-05"), completedAt: new Date("2026-11-06") },
-      { ...DEFAULT_TASKS[3], startingDate: new Date("2026-11-06"), completedAt: new Date("2026-11-07") },
+      { ...APPLICATION_SENT, startingDate: new Date("2026-11-06"), completedAt: new Date("2026-11-07") },
       {
         title: "Prepare for interview",
         taskType: "custom",
@@ -100,10 +84,7 @@ const seedApplications = [
     deadline: new Date("2026-11-01"),
     followUpDate: null,
     tasks: [
-      { ...DEFAULT_TASKS[0], startingDate: new Date("2026-10-16"), completedAt: new Date("2026-10-18") },
-      { ...DEFAULT_TASKS[1], startingDate: new Date("2026-10-18"), completedAt: new Date("2026-10-20") },
-      { ...DEFAULT_TASKS[2], startingDate: new Date("2026-10-20"), completedAt: new Date("2026-10-21") },
-      { ...DEFAULT_TASKS[3], startingDate: new Date("2026-10-21"), completedAt: new Date("2026-10-22") },
+      { ...APPLICATION_SENT, startingDate: new Date("2026-10-21"), completedAt: new Date("2026-10-22") },
     ],
   },
   {
@@ -117,10 +98,7 @@ const seedApplications = [
     deadline: new Date("2026-12-01"),
     followUpDate: new Date("2026-11-28"),
     tasks: [
-      { ...DEFAULT_TASKS[0], startingDate: new Date("2026-11-10"), completedAt: new Date("2026-11-12") },
-      { ...DEFAULT_TASKS[1], startingDate: new Date("2026-11-12"), completedAt: new Date("2026-11-14") },
-      { ...DEFAULT_TASKS[2], startingDate: new Date("2026-11-14"), completedAt: new Date("2026-11-15") },
-      { ...DEFAULT_TASKS[3], startingDate: new Date("2026-11-15"), completedAt: new Date("2026-11-16") },
+      { ...APPLICATION_SENT, startingDate: new Date("2026-11-15"), completedAt: new Date("2026-11-16") },
     ],
   },
   {
@@ -134,10 +112,7 @@ const seedApplications = [
     deadline: new Date("2026-12-20"),
     followUpDate: null,
     tasks: [
-      { ...DEFAULT_TASKS[0], startingDate: new Date("2026-11-19"), completedAt: null },
-      { ...DEFAULT_TASKS[1], startingDate: null, completedAt: null },
-      { ...DEFAULT_TASKS[2], startingDate: null, completedAt: null },
-      { ...DEFAULT_TASKS[3], startingDate: null, completedAt: null },
+      { ...APPLICATION_SENT, startingDate: null, completedAt: null },
     ],
   },
 ];

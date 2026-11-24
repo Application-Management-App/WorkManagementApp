@@ -1,85 +1,18 @@
 import Parse from "./parse.js";
 
 /**
- * Default tasks assigned per application status.
- * When a status is set, all tasks from the status chain are considered.
- * Each task has a title and a taskType for categorization.
- */
-const STATUS_TASKS = {
-  saved: [
-    { title: "Read job posting and research company", taskType: "research" },
-    { title: "Tailor CV to position", taskType: "document" },
-    { title: "Write cover letter", taskType: "document" },
-    { title: "Application sent", taskType: "submit" },
-  ],
-  applied: [
-    { title: "Send reminder", taskType: "custom" },
-    { title: "Receive response", taskType: "custom" },
-  ],
-  interview: [
-    { title: "Schedule interview", taskType: "custom" },
-    { title: "Prepare for interview", taskType: "custom" },
-  ],
-  accepted: [
-    { title: "Send follow-up email", taskType: "custom" },
-  ],
-  rejected: [
-    { title: "Send follow-up email", taskType: "custom" },
-    { title: "Ask for rejection reason", taskType: "custom" },
-  ],
-};
-
-/**
- * Defines which statuses' tasks are cumulative.
- * For example, "interview" includes tasks from "saved", "applied", and "interview".
- * "rejected" branches off from "applied" (does not include "interview" tasks).
- */
-const STATUS_CHAIN = {
-  saved: ["saved"],
-  applied: ["saved", "applied"],
-  interview: ["saved", "applied", "interview"],
-  accepted: ["saved", "applied", "interview", "accepted"],
-  rejected: ["saved", "applied", "rejected"],
-  closed: ["saved"],
-};
-
-/**
- * Add default tasks for a given status, skipping duplicates.
- * Uses the STATUS_CHAIN to determine which cumulative tasks should exist,
- * then compares against existing task titles using a Set for O(1) lookups.
+ * Create the "Application sent" step that every application gets automatically.
  *
  * @param {string} applicationId - Parse object ID of the application
- * @param {string} status - The new status to add tasks for
+ * @returns {Promise<Object>} The created task object
  */
-export async function addDefaultTasksForStatus(applicationId, status) {
-  const chain = STATUS_CHAIN[status] || ["saved"];
-
-  const requiredTasks = [];
-  for (const s of chain) {
-    const tasks = STATUS_TASKS[s] || [];
-    for (const t of tasks) {
-      requiredTasks.push(t);
-    }
-  }
-
-  const existing = await getTasksByApplication(applicationId);
-  const existingTitles = new Set(existing.map((t) => t.title));
-
-  let nextNumber = existing.length > 0
-    ? Math.max(...existing.map((t) => t.taskNumber)) + 1
-    : 1;
-
-  for (const task of requiredTasks) {
-    if (!existingTitles.has(task.title)) {
-      await createTask({
-        applicationId,
-        taskNumber: nextNumber,
-        title: task.title,
-        taskType: task.taskType,
-      });
-      nextNumber++;
-    }
-  }
+export async function createApplicationSentStep(applicationId) {
+  return createTask({
+    applicationId,
+    taskNumber: 1,
+    title: "Application sent",
+    taskType: "submit",
+  });
 }
 
 /**
@@ -180,4 +113,18 @@ export async function deleteTask(taskId) {
   const query = new Parse.Query(Task);
   const task = await query.get(taskId);
   await task.destroy();
+}
+
+/**
+ * Change the position number of a task.
+ *
+ * @param {string} taskId - Parse object ID of the task
+ * @param {number} taskNumber - New position number
+ */
+export async function updateTaskNumber(taskId, taskNumber) {
+  const Task = Parse.Object.extend("Task");
+  const query = new Parse.Query(Task);
+  const task = await query.get(taskId);
+  task.set("taskNumber", taskNumber);
+  await task.save();
 }
