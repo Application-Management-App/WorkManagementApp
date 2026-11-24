@@ -1,0 +1,438 @@
+/* ============================================================
+   Design tokens — colours, spacing, radii, typography
+   ============================================================ */
+
+:root {
+  /* Colours */
+  --cream: #FAF6EE;
+  --card: #FFFFFF;
+  --line: #E8DDCC;
+  --border: #8A8076;
+  --charcoal: #292521;
+  --muted: #5F574F;
+  --periwinkle: #7C93F2;
+  --periwinkle-light: #A9B8F6;
+  --periwinkle-tint: #D6DEF8;
+  --indigo: #4257C9;
+  --orange: #FF7A1A;
+  --pink: #FF8FD0;
+  --lime: #C8F25A;
+  --grey: #E4DDD2;
+  --danger: #d32f2f;
+  --danger-dark: #b71c1c;
+
+  /* Spacing scale (4px base) */
+  --space-1: 4px;  --space-2: 8px;   --space-3: 12px;
+  --space-4: 16px; --space-5: 24px;  --space-6: 32px;
+  --space-7: 48px;
+
+  /* Border radii */
+  --radius-sm: 6px;  --radius-md: 10px;
+  --radius-lg: 16px; --radius-pill: 999px;
+
+  /* Typography */
+  --font: "Archivo", system-ui, sans-serif;
+}
+
+/* ============================================================
+   Reset & base styles
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  color: var(--charcoal);
+  background: var(--cream);
+  line-height: 1.5;
+}
+
+/* ============================================================
+   Page layout — outer wrapper and sticky header band
+   ============================================================ */
+
+.page-layout {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+/* Purple banner at the top — sticky so it stays visible on scroll */
+.header-band {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--periwinkle);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  padding: var(--space-4);
+  margin: 0 calc(-1 * var(--space-4)) var(--space-5);
+}
+
+/* Top navigation bar inside the header band */
+.top-bar, .dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Dashboard section headings */
+.dashboard-header    { margin-bottom: var(--space-4); }
+.dashboard-header h2 { font-size: 1.25rem; }
+.dashboard h3        { margin-top: var(--space-6); margin-bottom: var(--space-3); }
+
+/* Detail panel hidden by default on mobile (shown via .mobile-detail-open) */
+.detail-panel { display: none; }
+.detail-back { display: none; }
+
+/* ============================================================
+   Buttons — primary, secondary, danger, small variants
+   ============================================================ */
+
+.btn {
+  border: 2px solid var(--charcoal);
+  border-radius: var(--radius-pill);
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.btn:hover     { box-shadow: 3px 3px 0 var(--charcoal); }
+.btn-secondary { background: var(--card); }
+.btn-primary   { background: var(--orange); }
+.btn-add       { padding: var(--space-2) var(--space-5); }
+.btn-sm        { padding: var(--space-1) var(--space-3); font-size: 0.8rem; }
+.btn-danger    { background: var(--danger); color: #fff; border: none; }
+.btn-danger:hover { background: var(--danger-dark); }
+
+/* Edit + Delete buttons row in detail panel header */
+.detail-actions { display: flex; gap: var(--space-2); }
+
+/* ============================================================
+   Ghost buttons — borderless text-only buttons
+   ============================================================ */
+
+.ghost-btn {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  padding: var(--space-2) 0;
+  color: var(--muted);
+}
+
+.ghost-btn:hover      { color: var(--charcoal); }
+.ghost-btn--accent    { color: var(--indigo); font-weight: 600; }
+.ghost-btn--delete    { font-size: 1.1rem; padding: 0 var(--space-1); }
+
+/* ============================================================
+   Cards — application cards and reminder cards in the sidebar
+   ============================================================ */
+
+.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin-bottom: var(--space-2);
+  cursor: pointer;
+}
+
+.card:hover    { border-color: var(--charcoal); }
+.card-selected { border-color: var(--indigo); background: var(--periwinkle-tint); }
+.card p        { color: var(--muted); }
+.card h4       { margin-bottom: var(--space-1); }
+
+/* Right side of card: status tag + arrow */
+.card-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.arrow                        { color: var(--muted); font-size: 1.25rem; }
+
+/* Reminder cards use pink background */
+.card-reminder                { background: var(--pink); }
+.card-reminder p,
+.card-reminder .arrow         { color: var(--charcoal); }
+
+/* ============================================================
+   Status tags — colour-coded pills per application status
+   ============================================================ */
+
+.status-tag {
+  border-radius: var(--radius-pill);
+  padding: var(--space-1) var(--space-3);
+  font-weight: 600;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  color: var(--charcoal);
+}
+
+.status-saved     { background: var(--periwinkle-tint); }
+.status-applied   { background: var(--periwinkle-light); }
+.status-interview { background: var(--periwinkle); }
+.status-accepted  { background: var(--lime); }
+.status-rejected, .status-closed { background: var(--grey); }
+
+/* ============================================================
+   Detail panel — right-side panel showing application details
+   ============================================================ */
+
+/* Header with company name and action buttons */
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-4);
+}
+
+.detail-muted { color: var(--muted); font-size: 0.9rem; }
+
+/* Status dropdown area */
+.detail-selectors {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.detail-select-group       { flex: 1; }
+.detail-select-group label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: var(--space-1); }
+
+.detail-select {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font: inherit;
+  background: var(--card);
+  color: var(--charcoal);
+  cursor: pointer;
+}
+
+/* Section dividers within the detail panel (Details, Steps, etc.) */
+.detail-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-3);
+}
+
+/* Key-value grid for deadline, URL, notes */
+.detail-list    { display: grid; grid-template-columns: auto 1fr; gap: var(--space-2) var(--space-5); }
+.detail-list dt { color: var(--muted); white-space: nowrap; }
+
+.detail-link       { color: var(--indigo); text-decoration: none; }
+.detail-link:hover { text-decoration: underline; }
+
+/* ============================================================
+   Steps checklist — task list with checkboxes in the detail panel
+   ============================================================ */
+
+.step-list { list-style: none; }
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.step-item:last-child { border-bottom: none; }
+
+/* Checkbox square */
+.step-check {
+  width: 22px; height: 22px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.step-check:hover { border-color: var(--indigo); }
+.step-done        { background: var(--charcoal); border-color: var(--charcoal); color: var(--card); }
+.step-done:hover  { background: var(--muted); border-color: var(--muted); }
+.step-text      { flex: 1; }
+.step-text-done { text-decoration: line-through; color: var(--muted); }
+.step-meta      { color: var(--muted); font-size: 0.8rem; white-space: nowrap; }
+
+/* Inline form for adding a new step */
+.add-step-form {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.add-step-input {
+  flex: 1;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+.add-step-input:focus {
+  outline: none;
+  border-color: var(--indigo);
+}
+
+/* Truncated job posting preview */
+.posting-text {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ============================================================
+   Add/Edit application form
+   ============================================================ */
+
+.add-app-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.form-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.form-field input,
+.form-field textarea {
+  padding: var(--space-2) var(--space-3);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: 0.95rem;
+  background: var(--card);
+  color: var(--charcoal);
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: var(--indigo);
+}
+
+.form-field textarea {
+  resize: vertical;
+}
+
+/* ============================================================
+   Floating add button — fixed on mobile, static on desktop
+   ============================================================ */
+
+.btn-add {
+  position: fixed;
+  bottom: var(--space-5);
+  right: var(--space-5);
+  z-index: 100;
+  box-shadow: 3px 3px 0 var(--charcoal);
+}
+
+/* ============================================================
+   Responsive — mobile-first, breakpoints at 1024px and up
+   ============================================================ */
+
+/* Mobile: full-screen detail panel replaces the dashboard */
+@media (max-width: 1023px) {
+  .mobile-detail-open .header-band,
+  .mobile-detail-open .dashboard { display: none; }
+
+  .mobile-detail-open .detail-panel {
+    display: block;
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+  }
+
+  .mobile-detail-open .detail-back {
+    display: inline-block;
+    margin-bottom: var(--space-3);
+    font-weight: 600;
+    color: var(--charcoal);
+  }
+
+  .mobile-detail-open .btn-add { display: none; }
+}
+
+/* Desktop: side-by-side layout with sticky detail panel */
+@media (min-width: 1024px) {
+  .btn-add {
+    position: static;
+    box-shadow: none;
+  }
+
+  .btn-add:hover {
+    box-shadow: 3px 3px 0 var(--charcoal);
+  }
+
+  .header-band {
+    margin: 0 0 var(--space-5);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .btn    { font-size: 1rem; }
+  .btn-sm { font-size: 0.875rem; }
+
+  .dashboard-header h2 { font-size: 1.5rem; }
+
+  /* Two-column layout: application list + detail panel */
+  .dashboard-container { display: flex; gap: var(--space-6); }
+  .dashboard           { flex: 1; min-width: 0; }
+
+  /* Detail panel as sticky sidebar */
+  .detail-panel {
+    display: block;
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    align-self: flex-start;
+    position: sticky;
+    top: var(--space-4);
+  }
+
+  /* Hide mobile back button on desktop */
+  .detail-back { display: none !important; }
+
+}
+
+/* Wide screens: constrain page width */
+@media (min-width: 1924px) {
+  .page-layout { width: 80%; }
+}
+
+@media (min-width: 2560px) {
+  .page-layout { max-width: 2048px; }
+}
