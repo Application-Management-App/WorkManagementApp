@@ -7,7 +7,8 @@ import {
   deleteApplication,
 } from "../services/applicationService.js";
 import {
-  addDefaultTasksForStatus,
+  createApplicationSentStep,
+  updateTaskNumber,
   getTasksByApplication,
   createTask,
   toggleTaskComplete,
@@ -125,18 +126,30 @@ export default function DashboardPage() {
   }
 
   /**
-   * Add a new custom task to the currently selected application.
+   * Add a new custom step to the selected application.
+   * While "Application sent" is open, new steps go above it,
+   * so it stays at the bottom. Once it is ticked, new steps go below it.
    *
-   * @param {string} title - Title for the new task
+   * @param {string} title - Title for the new step
    */
   async function handleAddTask(title) {
     try {
+      const sentStep = selectedTasks.find((t) => t.taskType === "submit");
+      const highest = selectedTasks.length > 0
+        ? Math.max(...selectedTasks.map((t) => t.taskNumber))
+        : 0;
+
       await createTask({
         applicationId: selectedApp.id,
-        taskNumber: selectedTasks.length + 1,
+        taskNumber: highest + 1,
         title,
         taskType: "custom",
       });
+
+      if (sentStep && sentStep.completedAt == null) {
+        await updateTaskNumber(sentStep.id, highest + 2);
+      }
+
       await refreshSelectedTasks(selectedApp.id);
       await refreshReminders(applications);
     } catch (err) {
@@ -145,7 +158,7 @@ export default function DashboardPage() {
   }
 
   /**
-   * Change an application's status and add its default tasks.
+   * Change an application's status.
    * Updates both the database and local React state to keep the UI in sync.
    *
    * @param {string} applicationId - Parse object ID
@@ -154,7 +167,6 @@ export default function DashboardPage() {
   async function handleStatusChange(applicationId, newStatus) {
     try {
       await updateApplicationStatus(applicationId, newStatus);
-      await addDefaultTasksForStatus(applicationId, newStatus);
       setApplications((prev) =>
         prev.map((app) =>
           app.id === applicationId ? { ...app, status: newStatus } : app
@@ -267,7 +279,7 @@ export default function DashboardPage() {
   }
 
   /**
-   * Submit a new application, assign default "saved" tasks,
+   * Submit a new application, give it the "Application sent" step,
    * refresh the list, and select the newly created application.
    *
    * @param {Object} data - Form data for the new application
@@ -275,7 +287,7 @@ export default function DashboardPage() {
   async function handleFormSubmit(data) {
     try {
       const created = await createApplication(data);
-      await addDefaultTasksForStatus(created.id, "saved");
+      await createApplicationSentStep(created.id);
       const apps = await getApplications();
       setApplications(apps);
       await refreshReminders(apps);
